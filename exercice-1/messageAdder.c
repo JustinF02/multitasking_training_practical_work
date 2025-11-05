@@ -17,10 +17,17 @@ volatile MSG_BLOCK out;
 //Consumer count storage
 volatile unsigned int consumeCount = 0;
 
+static pthread_mutex_t mutexConsumedCount;
+static pthread_mutex_t mutexOut;
+
 /**
  * Increments the consume count.
  */
-static void incrementConsumeCount(void);
+static void incrementConsumeCount(void){
+	pthread_mutex_lock(&mutexConsumedCount);
+	consumeCount++;
+	pthread_mutex_unlock(&mutexConsumedCount);
+}
 
 /**
  * Consumer entry point.
@@ -29,11 +36,17 @@ static void *sum( void *parameters );
 
 
 MSG_BLOCK getCurrentSum(){
-	//TODO
+	pthread_mutex_lock(&mutexOut);
+	MSG_BLOCK currentSum = out;
+	pthread_mutex_unlock(&mutexOut);
+	return currentSum;
 }
 
 unsigned int getConsumedCount(){
-	//TODO
+	pthread_mutex_lock(&mutexConsumedCount);
+	unsigned int count = consumeCount;
+	pthread_mutex_unlock(&mutexConsumedCount);
+	return count;
 }
 
 
@@ -43,11 +56,22 @@ void messageAdderInit(void){
 	{
 		out.mData[i] = 0;
 	}
-	//TODO
+	if(pthread_mutex_init(&mutexConsumedCount, NULL) != 0){
+		perror("[messageAdder] Error initializing consumed count mutex");
+		return;
+	}
+
+	if(pthread_create(&consumer, NULL, sum, NULL) != 0){
+		perror("[messageAdder] Error creating sum thread");
+		return;
+	}
 }
 
 void messageAdderJoin(void){
-	//TODO
+	pthread_join(consumer, NULL);
+	printf("[messageAdder] Sum thread joined\n");
+	pthread_mutex_destroy(&mutexConsumedCount);
+	pthread_mutex_destroy(&mutexOut);
 }
 
 static void *sum( void *parameters )
@@ -57,10 +81,15 @@ static void *sum( void *parameters )
 	while(i<ADDER_LOOP_LIMIT){
 		i++;
 		sleep(ADDER_SLEEP_TIME);
-		//TODO
+		
+		MSG_BLOCK msg = getMessage();
+		pthread_mutex_lock(&mutexOut);
+		messageAdd(&out, &msg);
+		incrementConsumeCount();
+		pthread_mutex_unlock(&mutexOut);
 	}
 	printf("[messageAdder] %d termination\n", gettid());
-	//TODO
+	pthread_exit(NULL);
 }
 
 

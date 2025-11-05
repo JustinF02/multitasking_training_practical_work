@@ -13,6 +13,9 @@ unsigned int getProducedCount(void);
 */
 MSG_BLOCK getMessage(void);
 
-//TODO create message accessors prototype here.
-
+/**
+* Puts a message into the buffer.
+* @param msg The message to put into the buffer.
+*/
+static void putMessage(MSG_BLOCK msg);
 #endif
