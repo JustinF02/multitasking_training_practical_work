@@ -1,54 +1,56 @@
+@enduml
+
 @startuml
 !pragma teoz true
-box "[TODO] process"
+box "bash"                          
 participant bash
 
-box "[TODO] process (child process)" #lightblue
-participant "[TODO]" as main
-participant "[TODO]:pthread_t" as thread1
-participant "[TODO]:pthread_mutex_t" as mutex
-participant "[TODO]:sem_t" as semaphore
+box "preambule" #lightblue
+participant "main" as main
+participant "thread_1" as thread1
+participant "mutex" as mutex
+participant "semaphore" as semaphore
 end box
 end box
 
 activate bash
-bash -> main --++ : "[TODO]"
+bash -> main --++ : "./preambule"
 
-main -> semaphore:"[TODO]"
+main -> semaphore:"sem_unlink"
 activate semaphore #gold
 return
-main -> semaphore:"[TODO]"
+main -> semaphore:"sem_open"
 activate semaphore #gold
 return
 
-main -> thread1:"[TODO]"
+main -> thread1:"pthread_create"
 activate thread1 #FFBBBB
 thread1 --> main
 note over thread1 : produce
 
-main -> thread1 :"[TODO]"
+main -> thread1 :"pthread_join"
 deactivate main
 
-thread1 -> mutex: "[TODO]"
+thread1 -> mutex: "pthread_mutex_lock"
 activate mutex #plum
 return
 
-thread1 -> mutex: "[TODO]"
+thread1 -> mutex: "pthread_mutex_unlock"
 activate mutex #plum
 return
 
-thread1 -> semaphore: "[TODO]"
+thread1 -> semaphore: "sem_post"
 activate semaphore #gold
 return
 
-thread1 -> semaphore: "[TODO]"
+thread1 -> semaphore: "sem_wait"
 activate semaphore #gold
 return 
 
-thread1 -> thread1 : "[TODO]"
+thread1 -> thread1 : "pthread_exit"
 thread1 --> main --++
 
-main -> semaphore : "[TODO]"
+main -> semaphore : "sem_destroy"
 activate semaphore #gold
 return
 
