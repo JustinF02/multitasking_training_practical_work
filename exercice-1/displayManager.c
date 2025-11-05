@@ -19,12 +19,16 @@ static void *display( void *parameters );
 
 
 void displayManagerInit(void){
-	//TODO
+	if(pthread_create(&displayThread, NULL, display, NULL) != 0){
+		perror("[displayManager] Error creating display thread");
+	}
 }
 
 void displayManagerJoin(void){
-	//TODO	
-} 
+	if(pthread_join(displayThread, NULL) != 0){
+		perror("[displayManager] Error joining display thread");
+	}
+}
 
 static void *display( void *parameters )
 {
@@ -32,8 +36,22 @@ static void *display( void *parameters )
 	unsigned int diffCount = 0;
 	while(diffCount < DISPLAY_LOOP_LIMIT){
 		sleep(DISPLAY_SLEEP_TIME);
-		//TODO
+		diffCount++;
+
+		sleep(DISPLAY_SLEEP_TIME);
+
+		unsigned int producedCount = getProducedCount();
+		unsigned int consumedCount = getConsumedCount();
+		MSG_BLOCK currentSum = getCurrentSum();
+		printf("[displayManager] Display %d: Produced count: %u, Consumed count: %u, Current sum checksum: %u\n",
+		       diffCount,
+		       producedCount,
+		       consumedCount,
+		       currentSum.checksum);
+
+		messageDisplay(currentSum);
+		fflush(stdout);
 	}
 	printf("[displayManager] %d termination\n", gettid());
-   //TODO
+    pthread_exit(NULL);
 }
