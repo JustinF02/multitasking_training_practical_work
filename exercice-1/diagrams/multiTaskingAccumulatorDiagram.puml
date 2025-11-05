@@ -1,0 +1,172 @@
+@startuml
+!pragma teoz true
+box "bash"                          
+participant bash
+
+
+box "MultitaskingAccumulator" #lightblue
+
+participant main [
+    =MultitaskingAccumulator
+    ----
+    main()
+]
+participant Display_Thread [
+    =Display
+    ----
+    display()
+]
+participant iSensor [
+    =iSensor
+    ----
+    getInput()
+]
+
+box "acquisitionManager" #LightSeaGreen
+
+participant Producer_Thread [
+    =Producer (x4)
+    ----
+    produce()
+]
+
+participant mutexBuffer [
+    =mutexBuffer
+]
+
+participant semFull [
+    =semFull
+]
+
+participant semEmpty [
+    =semEmpty
+]
+
+participant mutexProducedCount [
+    =mutexProducedCount
+]
+
+participant Buffer [
+    =Circular Buffer
+    ---
+    contains data
+]
+end box
+box "messageAdder" #lightcoral
+
+participant Consumer_Thread [
+    =Consumer
+    ----
+    sum()
+]
+
+participant mutexOut [
+    =mutexOut
+]
+participant mutexConsumedCount [
+    =mutexConsumedCount
+]
+
+end box
+end box
+end box
+
+
+
+activate bash
+bash -> main --++ : "./multitaskingAccumulator"
+
+main -> Producer_Thread:"threads create"
+main -> Consumer_Thread:"thread create"
+main -> Display_Thread:"thread create"
+
+
+
+'CONSUMER
+Consumer_Thread -> mutexOut: "pthread_mutex_lock"
+activate mutexOut #plum
+return
+
+Consumer_Thread -> Producer_Thread:"getMessage()"
+Producer_Thread -> semEmpty:"sem_wait"
+activate semEmpty #gold
+return
+
+Producer_Thread -> mutexBuffer:"pthread_mutex_lock"
+activate mutexBuffer #plum
+return
+Producer_Thread -> Buffer:"read"
+activate Buffer
+return
+Producer_Thread -> mutexBuffer:"pthread_mutex_unlock"
+activate mutexBuffer #plum
+return
+
+Producer_Thread -> semEmpty:"sem_post"
+activate semEmpty #gold
+return
+
+Producer_Thread->Consumer_Thread:"return message"
+
+Consumer_Thread -> mutexOut: "pthread_mutex_unlock"
+activate mutexOut #plum
+return
+
+
+
+Consumer_Thread -> mutexConsumedCount: "pthread_mutex_lock"
+activate mutexConsumedCount #plum
+return
+
+Consumer_Thread -> mutexConsumedCount: "pthread_mutex_unlock"
+activate mutexConsumedCount #plum
+return
+note over mutexConsumedCount : increment consumed count
+
+'PRODUCER
+Producer_Thread -> iSensor:"getInput()
+activate iSensor 
+return
+Producer_Thread -> semFull:"sem_wait"
+activate semFull #gold
+return
+Producer_Thread -> mutexBuffer:"pthread_mutex_lock"
+activate mutexBuffer #plum
+return
+Producer_Thread -> Buffer:"produce data"
+Producer_Thread -> mutexBuffer:"pthread_mutex_unlock"
+activate mutexBuffer #plum
+return
+Producer_Thread -> semFull:"sem_post"
+activate semFull #gold
+return
+
+Producer_Thread -> mutexProducedCount:"pthread_mutex_lock"
+activate mutexProducedCount #plum
+return
+note over mutexProducedCount : increment produce count
+Producer_Thread -> mutexProducedCount:"pthread_mutex_unlock"
+activate mutexProducedCount #plum
+return
+
+
+
+Display_Thread -> bash:"print messages"
+Consumer_Thread -> main:"thread join"
+Producer_Thread -> main:"thread join"
+Display_Thread -> main:"thread join"
+
+
+
+
+
+
+
+
+
+
+
+
+main -> bash --++: "return EXIT_SUCCESS"
+
+@enduml

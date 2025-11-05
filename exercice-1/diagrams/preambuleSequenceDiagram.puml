@@ -1,5 +1,3 @@
-@enduml
-
 @startuml
 !pragma teoz true
 box "bash"                          
