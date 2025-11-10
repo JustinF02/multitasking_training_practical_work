@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h>
@@ -10,7 +11,9 @@
 #include "multitaskingAccumulator.h"
 #include "iAcquisitionManager.h"
 #include "debug.h"
+#include <sys/types.h> 
 
+#define BUFFER_SIZE 1000
 
 //producer count storage
 volatile unsigned int produceCount = 0;
@@ -22,7 +25,6 @@ static void *produce(void *params);
 /**
 * Semaphores and Mutex
 */
-const int BUFFER_SIZE = 1000;
 //shared circular buffer between producers and consumers
 static MSG_BLOCK buffer[BUFFER_SIZE];
 static int write_index = 0; //Head (where to write)
@@ -170,7 +172,7 @@ void *produce(void* params)
 	while (i < PRODUCER_LOOP_LIMIT)
 	{
 		i++;
-		sleep(PRODUCER_SLEEP_TIME+(rand() % 5));
+		
 		MSG_BLOCK msg;
 		getInput(sensorId, &msg);
 
@@ -184,6 +186,8 @@ void *produce(void* params)
 		{
 			D(printf("[acquisitionManager] Producer %d produced a corrupted message %d\n", (unsigned int)(size_t)params, i));
 		}
+
+		sleep(PRODUCER_SLEEP_TIME+(rand() % 5));
 	}
 	printf("[acquisitionManager] %d termination\n", gettid());
 	//clean up resources

@@ -29,9 +29,9 @@ unsigned int messageCheck(volatile MSG_BLOCK* mBlock){
 		tcheck ^= mBlock->mData[i];
 	if(tcheck == mBlock->checksum){
 		printf("[OK      ] Checksum validated\n");
-		return 1;
+		return 0; //ERROR_SUCCESS
 	}else{
 		printf("[  FAILED] Checksum failed, message corrupted\n");
-		return 0;
+		return 2; //ERROR_CHECKSUM
 	}
 }

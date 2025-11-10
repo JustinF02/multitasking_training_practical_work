@@ -1,8 +1,8 @@
 .POSIX:
 CC      = cc
-CFLAGS  = -std=c11 -Wall -Wextra -O3 -mcx16 -pthread #-DDEBUG
+CFLAGS  = -std=c11 -Wall -Wextra -O3 -mcx16 -pthread -DDEBUG
 LDFLAGS = -pthread
-#LDLIBS  = -latomic
+LDLIBS  = -latomic
 
 C= $(wildcard *.c)
 H= $(wildcard *.h)

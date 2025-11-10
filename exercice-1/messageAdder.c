@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h> 
@@ -9,6 +10,7 @@
 #include "multitaskingAccumulator.h"
 #include "iAcquisitionManager.h"
 #include "debug.h"
+#include <sys/types.h> 
 
 //consumer thread
 pthread_t consumer;
@@ -60,6 +62,11 @@ void messageAdderInit(void){
 		perror("[messageAdder] Error initializing consumed count mutex");
 		return;
 	}
+	if(pthread_mutex_init(&mutexOut, NULL) != 0){
+        perror("[messageAdder] Error initializing out mutex");
+        pthread_mutex_destroy(&mutexConsumedCount); // Nettoyage
+        return;
+    }
 
 	if(pthread_create(&consumer, NULL, sum, NULL) != 0){
 		perror("[messageAdder] Error creating sum thread");
@@ -76,17 +83,20 @@ void messageAdderJoin(void){
 
 static void *sum( void *parameters )
 {
+	(void)parameters;
+
 	D(printf("[messageAdder]Thread created for sum with id %d\n", gettid()));
 	unsigned int i = 0;
 	while(i<ADDER_LOOP_LIMIT){
 		i++;
-		sleep(ADDER_SLEEP_TIME);
 		
 		MSG_BLOCK msg = getMessage();
 		pthread_mutex_lock(&mutexOut);
 		messageAdd(&out, &msg);
 		incrementConsumeCount();
 		pthread_mutex_unlock(&mutexOut);
+
+		sleep(ADDER_SLEEP_TIME);
 	}
 	printf("[messageAdder] %d termination\n", gettid());
 	pthread_exit(NULL);

@@ -23,10 +23,10 @@ int main( void )
 	
 	printf("[multitaskingAccumulator]Scheduling in progress...\n");
 
-	displayManagerJoin();
-	messageAdderJoin();
 	acquisitionManagerJoin();
-
+    messageAdderJoin();
+    displayManagerJoin();
+	
 	printf("[multitaskingAccumulator]Threads terminated\n");
 
 	exit(EXIT_SUCCESS);
