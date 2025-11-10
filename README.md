@@ -4,14 +4,18 @@ This is the Multitasking Training Practical work materials for master students.
 
 All instructions are in the pdf files of the subsequent folders.
 
-# Build
+## Build
 
 ```bash
 make posix
 ```
 
-# run
+## run
 
 ```bash
 ./multitaskingAccumulatorPosix
 ```
+
+## Sequence diagram
+![alt text](exercice-1/diagrams/sequenceDiagram.png)
+
