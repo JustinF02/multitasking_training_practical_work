@@ -6,7 +6,7 @@ Nom du thread : thread_1
 
 ### P.3
 
-Nom du sémaphore : semaphore
+Nom du sémaphore : "/preambule_sem"
 
 ### P.4
 
@@ -44,7 +44,7 @@ Demander au prof
 
 ### P.11
 
-A compléter
+La conception du programme n'est pas correcte car elle utilise sem_destroy(semaphore) pour libérer un sémaphore nommé (sem_open)
 
 ## Partie 1 - MultitaskingAccumulator
 
@@ -52,11 +52,17 @@ A compléter
 
 ![1763474822598](image\rapport_part2\ArchiAvecExigeances.png)
 
-## Question 2
+###Question 2
+
+Une approche dirigée par les événements est une approche asynchrone
+
+### Question 3
 
 ## Partie 2 - ATOMIC
 
-### Question 10Les processus POSIX ont l'avantage d'isoler l'espace mémoire. Si un processus plante, il n'affecte pas les autres, ce qui garantit un confinement des erreurs et donc une solution plus robuste que les tâches (threads). Cependant, l'utilisation de processus implique un surcoût pour le CPU (création et changement de contexte plus lourds). L'accès direct aux données partagées n'étant pas possible nativement (contrairement aux threads), l'utilisation de variables globales ne suffit pas. Il faudrait mettre en œuvre de la mémoire partagée POSIX (via shm_open/mmap) pour stocker le buffer et les mécanismes de synchronisation.
+### Question 10
+
+Les processus POSIX ont l'avantage d'isoler l'espace mémoire. Si un processus plante, il n'affecte pas les autres, ce qui garantit un confinement des erreurs et donc une solution plus robuste que les tâches (threads). Cependant, l'utilisation de processus implique un surcoût pour le CPU (création et changement de contexte plus lourds). L'accès direct aux données partagées n'étant pas possible nativement (contrairement aux threads), l'utilisation de variables globales ne suffit pas. Il faudrait mettre en œuvre de la mémoire partagée POSIX (via shm_open/mmap) pour stocker le buffer et les mécanismes de synchronisation.
 
 ### Question 11
 
