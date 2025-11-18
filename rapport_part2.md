@@ -1,0 +1,61 @@
+## Partie 2 - ATOMIC
+
+### Question 10
+
+Les processus POSIX ont l'avantage d'isoler l'espace mémoire. Si un processus plante, il n'affecte pas les autres, ce qui garantit un confinement des erreurs et donc une solution plus robuste que les tâches (threads). Cependant, l'utilisation de processus implique un surcoût pour le CPU (création et changement de contexte plus lourds). L'accès direct aux données partagées n'étant pas possible nativement (contrairement aux threads), l'utilisation de variables globales ne suffit pas. Il faudrait mettre en œuvre de la mémoire partagée POSIX (via shm_open/mmap) pour stocker le buffer et les mécanismes de synchronisation.
+
+### Question 11
+
+Une solution serait d'utiliser des variables atomic, dont l'atomicité est géré par le hardware (côté CPU) et non software (mutex).
+
+### Question 12
+
+static void incrementProducedCount(void)
+{
+	atomic_fetch_add(&producedCount, 1);
+}
+
+unsigned int getProducedCount(void)
+{
+	return atomic_load(&producedCount);
+}
+
+Get message for input 1 
+[OK      ] Checksum validated
+[acquisitionManagerAtomic] Producer 1 produced message 3
+Get message for input 0 
+[OK      ] Checksum validated
+[acquisitionManagerAtomic] Producer 0 produced message 3
+[msg]....Sum done...
+Get message for input 2 
+[OK      ] Checksum validated
+
+Proposez une deuxième solution pour que ces méthodes incrementProducerCount et getProducerCount en vous basant sur la méthode
+atomic_compare_exchange_weak ?
+
+### Question 13
+
+Une autre solution pour protéger la variable atomique est d'utiliser une variable atomique comme drapeau d'accès (à la même manière d'un mutex). La méthode atomic_compare_exchange_weak utilise notre variable atomique pour vérifier si l'accès à la donnée est disponible. Tant que la variable atomique ne le permet pas, la méthode va échouer et rester en attente active.
+
+```c
+static void pCountLockTake(void) {
+    int expected = 0;
+    
+    while (!atomic_compare_exchange_weak(&pCountLock, &expected, 1)) {
+       expected = 0;
+    }
+}
+
+static void pCountLockRelease(void) {
+    atomic_store(&pCountLock, 0);
+}
+
+static void incrementProducedCount(void)
+{
+	pCountLockTake();
+    producedCount++;
+    pCountLockRelease();
+}
+```
+
+
