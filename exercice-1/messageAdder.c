@@ -51,6 +51,16 @@ unsigned int getConsumedCount(){
 	return count;
 }
 
+void getSumAndCount(MSG_BLOCK *sumDest, unsigned int *countDest) {
+    pthread_mutex_lock(&mutexOut)
+    
+    //*sumDest = *((MSG_BLOCK*)&out);
+	*sumDest = out;
+    *countDest = consumeCount;
+    
+    pthread_mutex_unlock(&mutexOut); 
+}
+
 
 void messageAdderInit(void){
 	out.checksum = 0;

@@ -42,8 +42,10 @@ static void *display( void *parameters )
 		
 
 		unsigned int producedCount = getProducedCount();
-		unsigned int consumedCount = getConsumedCount();
-		MSG_BLOCK currentSum = getCurrentSum();
+		unsigned int consumedCount; // = getConsumedCount();
+		MSG_BLOCK currentSum; // = getCurrentSum();
+		getSumAndCount( &currentSum, &consumedCount);
+
 		printf("[displayManager] Display %d: Produced count: %u, Consumed count: %u, Current sum checksum: %u\n",
 		       diffCount,
 		       producedCount,
