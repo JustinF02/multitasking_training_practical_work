@@ -1,48 +1,48 @@
 ## Préambule
 
-### Question 2
+### P.2
 
 Nom du thread : thread_1
 
-### Question 3
+### P.3
 
 Nom du sémaphore : semaphore
 
-### Question 4
+### P.4
 
 Nom du mutex : mutex
 
-### Question 5
+### P.5
 
 Le thread est créé à la ligne 44 par :
 
 pthread_create(&thread_1,NULL, produce, NULL);
 
-### Question 6
+### P.6
 
 Le point d'entrée du thread est la méthode :
 
 *produce(void *params)
 
-### Question 7
+### P.7
 
 L'attente de la fin du thread se fait par la ligne :
 
 pthread_join(thread_1, NULL);
 
-### Question 8
+### P.8
 
 Le thread par défaut du processus courant est celui décrit par la fonction main().
 
-### Question 9
+### P.9
 
 Demander au prof
 
-### Question 10
+### P.10
 
 ![1763474317604](image/rapport_part2/1763474317604.png)
 
-### Question 11
+### P.11
 
 A compléter
 
@@ -53,7 +53,6 @@ A compléter
 ![1763474822598](image\rapport_part2\ArchiAvecExigeances.png)
 
 ## Question 2
-
 
 ## Partie 2 - ATOMIC
 
@@ -93,6 +92,7 @@ atomic_compare_exchange_weak ?
 Une autre solution pour protéger la variable atomique est d'utiliser une variable atomique comme drapeau d'accès (à la même manière d'un mutex). La méthode atomic_compare_exchange_weak utilise notre variable atomique pour vérifier si l'accès à la donnée est disponible. Tant que la variable atomique ne le permet pas, la méthode va échouer et rester en attente active.
 
 ### Question 14
+
 ```c
 static void pCountLockTake(void) {
     int expected = 0;
@@ -113,9 +113,11 @@ static void incrementProducedCount(void)
     pCountLockRelease();
 }
 ```
+
 <<<<<<< HEAD:rapport_Ferdinand_Arson.md
 
 ### Question 15
+
 POSIX avg time : 367.5 us
 ATOMIC avg time : 148.1 us
 A weak avg time : 405.2 us
@@ -127,8 +129,12 @@ Pour POSIX, on peut dire que les appels système sont la raison du surplus de co
 
 Une approche basée sur le temps, et non basée par les évènements est une approche synchrone.
 
-
-
-
 =======
+
 >>>>>>> refs/remotes/origin/2025:rapport_part2.md
+>>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>
+>>
