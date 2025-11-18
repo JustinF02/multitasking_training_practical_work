@@ -37,6 +37,7 @@ atomic_compare_exchange_weak ?
 
 Une autre solution pour protéger la variable atomique est d'utiliser une variable atomique comme drapeau d'accès (à la même manière d'un mutex). La méthode atomic_compare_exchange_weak utilise notre variable atomique pour vérifier si l'accès à la donnée est disponible. Tant que la variable atomique ne le permet pas, la méthode va échouer et rester en attente active.
 
+### Question 14
 ```c
 static void pCountLockTake(void) {
     int expected = 0;
@@ -57,5 +58,19 @@ static void incrementProducedCount(void)
     pCountLockRelease();
 }
 ```
+
+### Question 15
+POSIX avg time : 367.5 us
+ATOMIC avg time : 148.1 us
+A weak avg time : 405.2 us
+
+Conclusion sur les mesures : On observe que l'implémentation MultitaskingAccumulatorAtomic est la plus performante et la plus stable (temps moyens très bas, autour de 148.1µs). L'implémentation TestA est moins efficace car l'attente active de la variable atomique consomme inutilement des cycles CPU tant que le verrou n'est pas libre. Enfin, l'implémentation POSIX est globalement plus lente et surtout plus irrégulière (fortes variations entre les exécutions).
+Pour POSIX, on peut dire que les appels système sont la raison du surplus de coût dans le temps d'exécution.
+
+### Question 16
+
+Une approche basée sur le temps, et non basée par les évènements est une approche synchrone.
+
+
 
 

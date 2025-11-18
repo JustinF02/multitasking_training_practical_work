@@ -1,19 +1,25 @@
 # Practical Work
 
-This is the Multitasking Training Practical work materials for master students.
+This is the Multitasking Training Practical Practical Course.
 
-All instructions are in the pdf files of the subsequent folders.
+Students :
+FERDINAND Justin
+ARSON Gautier
+
+All instructions are in the pdf file.
 
 ## Build
 
 ```bash
-make posix
+make posix & make atomic & make testandset
 ```
 
 ## run
 
 ```bash
 ./multitaskingAccumulatorPosix
+./multitaskingAccumulatorAtomic
+./multitaskingAccumulatorTestAndSet
 ```
 
 ## Sequence diagram
