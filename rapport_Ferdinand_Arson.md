@@ -2,11 +2,11 @@
 
 ### P.2
 
-Nom du thread : thread_1
+Nom du thread : `thread_1`
 
 ### P.3
 
-Nom du sémaphore : "/preambule_sem"
+Nom du sémaphore : `"/preambule_sem"`
 
 ### P.4
 
@@ -16,27 +16,23 @@ Nom du mutex : mutex
 
 Le thread est créé à la ligne 44 par :
 
-pthread_create(&thread_1,NULL, produce, NULL);
+`pthread_create(&thread_1,NULL, produce, NULL);`
 
 ### P.6
 
 Le point d'entrée du thread est la méthode :
 
-*produce(void *params)
+`*produce(void *params)`
 
 ### P.7
 
 L'attente de la fin du thread se fait par la ligne :
 
-pthread_join(thread_1, NULL);
+`pthread_join(thread_1, NULL);`
 
 ### P.8
 
 Le thread par défaut du processus courant est celui décrit par la fonction main().
-
-### P.9
-
-Demander au prof
 
 ### P.10
 
@@ -44,7 +40,7 @@ Demander au prof
 
 ### P.11
 
-La conception du programme n'est pas correcte car elle utilise sem_destroy(semaphore) pour libérer un sémaphore nommé (sem_open)
+La conception du programme n'est pas correcte car elle utilise `sem_destroy(semaphore)` pour libérer un sémaphore nommé `(sem_open)`
 
 ## Partie 1 - MultitaskingAccumulator
 
@@ -52,11 +48,21 @@ La conception du programme n'est pas correcte car elle utilise sem_destroy(semap
 
 ![1763474822598](image\rapport_part2\ArchiAvecExigeances.png)
 
-###Question 2
+### Question 2
 
 Une approche dirigée par les événements est une approche asynchrone
 
 ### Question 3
+
+`messageCheck` répond à l'exigence 3. Il s'agit de vérifier l'intégrité des données à l'aide d'un checksum.
+
+### Question 4
+
+A ce stade de l'implémentation squelette, il y a un processus (le `main()`) et 6 threads POSIX (4 `produce()`,  `sum()`, `display()`).
+
+### Question 5
+
+La boucle `for` itère sur tous les éléments du tableau de données (`mData`) contenu dans la structure `mBlock`. La taille de ce tableau est définie par la constante `DATA_SIZE` (qui est définie dans le header). La méthode fait ensuite l'opération `tcheck ^= mBlock->mData[i]` équivalente à `tcheck = tcheck ^ mBlock->mData[i]`. Elle commence avec `tcheck = 0`. Elle prend le premier octet de données et fait un XOR avec `tcheck`. Le résultat devient le nouveau `tcheck`. Elle prend ensuite le deuxième octet, on fait un XOR avec le nouveau `tcheck`, et ainsi de suite.
 
 ## Partie 2 - ATOMIC
 
@@ -68,7 +74,7 @@ Les processus POSIX ont l'avantage d'isoler l'espace mémoire. Si un processus p
 
 Une solution serait d'utiliser des variables atomic, dont l'atomicité est géré par le hardware (côté CPU) et non software (mutex).
 
-### Question 12
+### Question 12
 
 static void incrementProducedCount(void)
 {
@@ -93,7 +99,7 @@ Get message for input 2
 Proposez une deuxième solution pour que ces méthodes incrementProducerCount et getProducerCount en vous basant sur la méthode
 atomic_compare_exchange_weak ?
 
-### Question 13
+### Question 13
 
 Une autre solution pour protéger la variable atomique est d'utiliser une variable atomique comme drapeau d'accès (à la même manière d'un mutex). La méthode atomic_compare_exchange_weak utilise notre variable atomique pour vérifier si l'accès à la donnée est disponible. Tant que la variable atomique ne le permet pas, la méthode va échouer et rester en attente active.
 
