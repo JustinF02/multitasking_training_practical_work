@@ -54,7 +54,56 @@ A compléter
 
 ## Question 2
 
+## Implémentation
 
+### Question 7 
+
+L'impémentation de la conception est disponible dans le fichier archive de notre rendu. 
+
+Voici un résultat d'exécution :
+
+```bash
+Get message for input 0 
+[msg]....Sum done...
+[OK      ] Checksum validated
+[acquisitionManager] Producer 0 produced message 4
+Get message for input 2 
+[OK      ] Checksum validated
+[acquisitionManager] Producer 2 produced message 3
+Get message for input 1 
+[OK      ] Checksum validated
+[acquisitionManager] Producer 1 produced message 3
+[msg]....Sum done...
+Get message for input 1 
+Get message for input 3 
+[OK      ] Checksum validated
+[acquisitionManager] Producer 1 produced message 4
+[OK      ] Checksum validated
+[acquisitionManager] Producer 3 produced message 4
+[acquisitionManager] 8264 termination
+[msg]....Sum done...
+[acquisitionManager] 8267 termination
+Get message for input 2 
+[OK      ] Checksum validated
+[acquisitionManager] Producer 2 produced message 4
+[acquisitionManager] 8265 termination
+[displayManager] 8269 termination
+[msg]....Sum done...
+[msg]....Sum done...
+[acquisitionManager] 8266 termination
+[acquisitionManager]Semaphore cleaned
+[msg]....Sum done...
+[msg]....Sum done...
+[msg]....Sum done...
+[msg]....Sum done...
+[msg]....Sum done...
+[msg]....Sum done...
+[msg]....Sum done...
+[msg]....Sum done...
+[messageAdder] 8268 termination
+[messageAdder] Sum thread joined
+[multitaskingAccumulator]Threads terminated
+```
 ## Partie 2 - ATOMIC
 
 ### Question 10Les processus POSIX ont l'avantage d'isoler l'espace mémoire. Si un processus plante, il n'affecte pas les autres, ce qui garantit un confinement des erreurs et donc une solution plus robuste que les tâches (threads). Cependant, l'utilisation de processus implique un surcoût pour le CPU (création et changement de contexte plus lourds). L'accès direct aux données partagées n'étant pas possible nativement (contrairement aux threads), l'utilisation de variables globales ne suffit pas. Il faudrait mettre en œuvre de la mémoire partagée POSIX (via shm_open/mmap) pour stocker le buffer et les mécanismes de synchronisation.
@@ -113,7 +162,6 @@ static void incrementProducedCount(void)
     pCountLockRelease();
 }
 ```
-<<<<<<< HEAD:rapport_Ferdinand_Arson.md
 
 ### Question 15
 POSIX avg time : 367.5 us
@@ -127,8 +175,16 @@ Pour POSIX, on peut dire que les appels système sont la raison du surplus de co
 
 Une approche basée sur le temps, et non basée par les évènements est une approche synchrone.
 
+### Question 17
+![alt text](diagrams/qu17.png)
 
+Le diagramme ci-dessus illustre une production de messages toutes les 100ms en méthode synchrone. Le pipeline producteur -> consommateur -> display est ainsi représenté.
 
+La tâche producer s'exécute périodiquement sur chaque front d'horloge pour récupérer les donneurs du capteur.
+La tâche consumer traite les données produites lors du cycle précédent et la tâche display finalise en affichant les résultats accumulés.
 
-=======
->>>>>>> refs/remotes/origin/2025:rapport_part2.md
+Ainsi, l'activation systématique du thread_producer à chaque front d'horloge garantit l'exigence 6. La double ligne rouge en bas du graphique représente le délai de bout en bout demandé par l'exigence 7.
+
+### Question 18
+
+Le jitter de sortie est garantit par l'introduction de contraintes temporelles de type before dans le modèle PsyC. Concrètement, cela se traduit par l'ajout de deadlines strictes (représentées par des lignes verticales hachurées sur le diagramme) pour la tâche d'affichage. Cela garantit que la sortie est toujours disponible avant la fin du cycle alloué, rendant le flux de sortie régulier et prédictible.
