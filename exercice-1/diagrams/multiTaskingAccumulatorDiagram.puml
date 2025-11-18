@@ -31,19 +31,19 @@ participant Producer_Thread [
 ]
 
 participant mutexBuffer [
-    =mutexBuffer
+    =mutexBuffer=1
 ]
 
 participant semFull [
-    =semFull
+    =semFull=0
 ]
 
 participant semEmpty [
-    =semEmpty
+    =semEmpty=N
 ]
 
 participant mutexProducedCount [
-    =mutexProducedCount
+    =mutexProducedCount=1
 ]
 
 participant Buffer [
@@ -152,9 +152,9 @@ return
 
 
 Display_Thread -> bash:"print messages"
-Consumer_Thread -> main:"thread join"
-Producer_Thread -> main:"thread join"
-Display_Thread -> main:"thread join"
+main --> Consumer_Thread:"thread join"
+main --> Producer_Thread:"thread join"
+main --> Display_Thread:"thread join"
 
 
 
