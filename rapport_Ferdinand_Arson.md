@@ -60,6 +60,12 @@ A compléter
 
 ## Question 2
 
+
+### Question 6
+
+![alt text](exercice-1/diagrams/sequenceDiagram.png)
+
+*Les blocs de couleurs ne représentent pas des processus mais simplement les fichiers.c*
 ## Implémentation du MultitaskingAccumulatorPosix
 
 ### Question 7 
@@ -206,7 +212,8 @@ Pour POSIX, on peut dire que les appels système sont la raison du surplus de co
 Une approche basée sur le temps, et non basée par les évènements est une approche synchrone.
 
 ### Question 17
-![alt text](diagrams/qu17.png)
+![alt text](exercice-1/diagrams/qu17.png)
+![](dia)
 
 Le diagramme ci-dessus illustre une production de messages toutes les 100ms en méthode synchrone. Le pipeline producteur -> consommateur -> display est ainsi représenté.
 
