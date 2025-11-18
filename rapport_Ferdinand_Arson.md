@@ -1,3 +1,9 @@
+# Compte rendu de TP - B0
+
+## Étudiants :
+Justin FERDINAND
+Gautier ARSON
+
 ## Préambule
 
 ### Question 2
@@ -54,7 +60,7 @@ A compléter
 
 ## Question 2
 
-## Implémentation
+## Implémentation du MultitaskingAccumulatorPosix
 
 ### Question 7 
 
@@ -104,9 +110,33 @@ Get message for input 2
 [messageAdder] Sum thread joined
 [multitaskingAccumulator]Threads terminated
 ```
+
+## Question 8
+
+Si une préemption survient entre la lecture de consumedCOunt et la lecture de currentSum, le adder peut s'exécuter, modifier la somme et incrémenter le compteur. De ce fait, display afficherait une donnée érronée.
+Une solution serait d'implémenter un getter qui retourne les deux données simultanément avec un verrou.
+
+```c
+void getSumAndCount(MSG_BLOCK *sumDest, unsigned int *countDest) {
+    pthread_mutex_lock(&mutexOut)
+    
+	*sumDest = out;
+    *countDest = consumeCount;
+    
+    pthread_mutex_unlock(&mutexOut); 
+}
+```
+Une erreur de copie d'objet nous empêche de terminer cette implémentation
+
+## Question 9
+
+Le mot clé volatile est utilisé pour informer le compilateur que la variable peut changer à tout moment. Dans notre code, il s'agit de producedCount, consumeCount et out.
+
 ## Partie 2 - ATOMIC
 
-### Question 10Les processus POSIX ont l'avantage d'isoler l'espace mémoire. Si un processus plante, il n'affecte pas les autres, ce qui garantit un confinement des erreurs et donc une solution plus robuste que les tâches (threads). Cependant, l'utilisation de processus implique un surcoût pour le CPU (création et changement de contexte plus lourds). L'accès direct aux données partagées n'étant pas possible nativement (contrairement aux threads), l'utilisation de variables globales ne suffit pas. Il faudrait mettre en œuvre de la mémoire partagée POSIX (via shm_open/mmap) pour stocker le buffer et les mécanismes de synchronisation.
+### Question 10
+
+Les processus POSIX ont l'avantage d'isoler l'espace mémoire. Si un processus plante, il n'affecte pas les autres, ce qui garantit un confinement des erreurs et donc une solution plus robuste que les tâches (threads). Cependant, l'utilisation de processus implique un surcoût pour le CPU (création et changement de contexte plus lourds). L'accès direct aux données partagées n'étant pas possible nativement (contrairement aux threads), l'utilisation de variables globales ne suffit pas. Il faudrait mettre en œuvre de la mémoire partagée POSIX (via shm_open/mmap) pour stocker le buffer et les mécanismes de synchronisation.
 
 ### Question 11
 
@@ -114,6 +144,7 @@ Une solution serait d'utiliser des variables atomic, dont l'atomicité est gér�
 
 ### Question 12
 
+```c
 static void incrementProducedCount(void)
 {
 	atomic_fetch_add(&producedCount, 1);
@@ -123,7 +154,8 @@ unsigned int getProducedCount(void)
 {
 	return atomic_load(&producedCount);
 }
-
+```
+```bash
 Get message for input 1
 [OK      ] Checksum validated
 [acquisitionManagerAtomic] Producer 1 produced message 3
@@ -133,9 +165,7 @@ Get message for input 0
 [msg]....Sum done...
 Get message for input 2
 [OK      ] Checksum validated
-
-Proposez une deuxième solution pour que ces méthodes incrementProducerCount et getProducerCount en vous basant sur la méthode
-atomic_compare_exchange_weak ?
+```
 
 ### Question 13
 
